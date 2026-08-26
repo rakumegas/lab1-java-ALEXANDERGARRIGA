@@ -1,0 +1,35 @@
+name: Autograding Laboratorio 1
+
+on: [push]
+
+jobs:
+  evaluacion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo entregado
+        uses: actions/checkout@v3
+
+      - name: Instalar Java 17 JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Compilar codigo Java
+        run: javac Laboratorio1.java
+
+      - name: Validar ejecucion y objetos
+        run: |
+          OUTPUT=$(java Laboratorio1)
+          echo "$OUTPUT"
+          
+          # Contamos cuántas veces aparece "Auto:" en la salida (debe ser al menos 2)
+          OCURRENCIAS=$(echo "$OUTPUT" | grep -c "Auto:")
+          
+          if [ "$OCURRENCIAS" -ge 2 ]; then
+            echo "✅ PRUEBA PASADA: El estudiante instanció y ejecutó los objetos correctamente."
+            exit 0
+          else
+            echo "❌ PRUEBA FALLIDA: Debe haber al menos 2 objetos ejecutando el método mostrarDatos()."
+            exit 1
+          fi
